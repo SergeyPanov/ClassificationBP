@@ -6,6 +6,7 @@ import cz.vut.fit.neuron.Neuron;
 import cz.vut.fit.neuron.OutputNeuron;
 import cz.vut.fit.synapse.Synapse;
 
+
 /**
  * Network class represent network with single layer of hidden neurons.
  */
@@ -88,6 +89,11 @@ public class Network {
      */
     private double globalError;
 
+    /**
+     * Changes in the errors.
+     */
+    private double errorDelta[];
+
 
     public Network(int inputCount,
                    int hiddenCount,
@@ -115,6 +121,7 @@ public class Network {
 
 
         this.error = new double[totalNeurons];
+        this.errorDelta = new double[totalNeurons];
 
         this.inputNeurons = new InputNeuron[inputCount];
         for ( i = 0 ; i < inputCount; ++ i ){
@@ -132,6 +139,12 @@ public class Network {
         }
     }
 
+    public double getError(int len){
+        double err = Math.sqrt(globalError / (len * outputCount));
+        globalError = 0; // clear the accumulator
+        return err;
+    }
+
     /**
      * Activation function "sigmoid".
      * @param sum
@@ -145,25 +158,60 @@ public class Network {
     /**
      * Calculate root mean square error.
      * @param desired
-     * @return
      */
-    private double calculateError(double desired[]){
-        //TODO: Calculate error
+    public void calculateError(double desired[]){
+
+        int outputIndex = inputCount + hiddenCount;
 
         for (int i = 0 ; i < inputNeurons.length; ++ i){
             error[i] = 0;
         }
 
         /*
-        Count layer errors and deltas for output.
+        Count layer errors and deltas for output neurons.
          */
+        for ( int i = 0; i < outputNeurons.length; ++ i ){
+            error[outputIndex + i] = desired[i] - outputNeurons[i].getFire();
+            globalError += error[inputCount + hiddenCount + i] * error[inputCount + hiddenCount + i];
+            errorDelta[inputCount + hiddenCount + i] = error[outputIndex + i] * outputNeurons[i].getFire() * ( 1 - outputNeurons[i].getFire() );
+        }
 
-//        for ( int i = 0; i < outputNeurons.length; ++ i ){
-//            error[outputNeurons.length + i] = desired[]
-//        }
 
-        return 0.0;
+        /*
+        Count layer errors and deltas for hidden neurons.
+         */
+        int winx = inputCount * hiddenCount;
+
+        for (int i = 0; i < outputCount; ++ i){
+            for (int j = 0; j < hiddenCount; ++ j){
+                accSynapseDelta[winx] += errorDelta[outputIndex + i] * hiddenNeurons[j].getFire();  //GRAD(a->b)
+                final int k = j;
+                error[inputCount + j] += outputNeurons[i].getConnections().stream().filter(synapse -> synapse.getFrom() == hiddenNeurons[k]).mapToDouble(Synapse::getWeight).sum() * errorDelta[outputIndex + i];
+                winx++;
+            }
+            accThresholdDelta[outputIndex + i] += errorDelta[outputIndex + i];
+        }
+
+        for (int i = 0; i < hiddenCount; ++ i){
+            errorDelta[inputCount + i] = error[inputCount + i] * hiddenNeurons[i].getFire() * (1 - hiddenNeurons[i].getFire());
+        }
+
+        /*
+        Input layer error.
+         */
+        winx = 0;
+
+        for (int i = 0; i < hiddenCount; ++ i){
+            for (int j = 0 ; j < inputCount; ++ j){
+                accSynapseDelta[winx] += errorDelta[i] * inputNeurons[j].getFire();
+                final int k = j;
+                error[j] += hiddenNeurons[i].getConnections().stream().filter(synapse -> synapse.getFrom() == inputNeurons[k]).mapToDouble(Synapse::getWeight).sum() * errorDelta[hiddenCount + i];
+                winx++;
+            }
+            accThresholdDelta[inputCount + i] += errorDelta[inputCount + i];
+        }
     }
+
 
     /**
      * Calculate output of the network for given input.
@@ -203,8 +251,37 @@ public class Network {
             }
             outputNeurons[i].setFire(sigmoid(sum));
         }
+
+
     }
 
+    private int adjustWeights(Neuron[] layer, int index){
+        for (Neuron neuron:
+                layer) {
+            for (Synapse synapse:
+                    neuron.getConnections()) {
+                synapseDelta[index] = learnRate * accSynapseDelta[index] + momentum * synapseDelta[index];
+                synapse.setWeight(synapse.getWeight() + synapseDelta[index]);
+                accSynapseDelta[index] = 0.0;
+                ++ index;
+            }
+        }
+        return index;
+    }
+
+    public void learn(){
+        int i = 0;
+
+        i = adjustWeights(hiddenNeurons, i);
+        adjustWeights(outputNeurons, i);
+
+        for (i = inputCount ; i < totalNeurons; ++ i){
+            thresholdDelta[i] = learnRate * accThresholdDelta[i] + momentum * thresholdDelta[i];
+            thresholds[i] += thresholdDelta[i];
+            accThresholdDelta[i] = 0;
+        }
+
+    }
 
     private void connectLayers(Neuron[] first, Neuron[] second){
         for (Neuron aFirst : first) {

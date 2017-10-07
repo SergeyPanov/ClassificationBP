@@ -10,17 +10,35 @@ public class Neuron {
      */
     private double fire;
 
-    /**
-     * List of input synapses.
-     */
-    private ArrayList<Synapse> connections;
+    private ArrayList<Synapse> inputSynapses;
+    private ArrayList<Synapse> outputSynapses;
+
+    private double sigma;
+
+
+    private double sigmoid(double sum) {
+        return 1.0 / (1 + Math.exp(-1.0 * sum));
+    }
+
+    public double derivation(){
+        return (1 - fire) * fire;
+    }
 
     /**
      * Init neuron.
      */
     Neuron(){
-        connections = new ArrayList<>();
+        inputSynapses = new ArrayList<>();
+        outputSynapses = new ArrayList<>();
         fire = 0.5 - (Math.random());
+    }
+
+    public ArrayList<Synapse> getInputSynapses(){
+        return inputSynapses;
+    }
+
+    public ArrayList<Synapse> getOutputSynapses(){
+        return outputSynapses;
     }
 
     /**
@@ -32,19 +50,16 @@ public class Neuron {
         this.fire = fire;
     }
 
-
-
-
-
-
-    public ArrayList<Synapse> getConnections() {
-        return connections;
+    public void calculateFile(){
+        fire = sigmoid(inputSynapses.stream().mapToDouble(s -> s.getWeight() * s.getFrom().getFire()).sum());
     }
 
-    public void addConnection(Synapse connection) {
-        this.connections.add(connection);
+    public void addInputSynapse(Synapse input){
+        inputSynapses.add(input);
     }
-
+    public void addOutputSynapse(Synapse output){
+        outputSynapses.add(output);
+    }
 
     public double getFire() {
         return fire;
@@ -54,4 +69,11 @@ public class Neuron {
         this.fire = fire;
     }
 
+    public double getSigma() {
+        return sigma;
+    }
+
+    public void setSigma(double sigma) {
+        this.sigma = sigma;
+    }
 }

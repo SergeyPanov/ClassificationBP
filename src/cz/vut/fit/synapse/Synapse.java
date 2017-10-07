@@ -18,10 +18,15 @@ public class Synapse {
      */
     private double weight;
 
+    private double oldDeltaWeight;
+
+    private double grad;
+
 
 
     public Synapse(){
         weight = 0.5 - (Math.random());
+        oldDeltaWeight = 0.0;
     }
 
     /**
@@ -29,6 +34,7 @@ public class Synapse {
      * @param delta
      */
     public void adjustWeight(double delta){
+        oldDeltaWeight = delta;
         weight += delta;
     }
 
@@ -52,7 +58,17 @@ public class Synapse {
         return weight;
     }
 
-    public void setWeight(double weight) {
-        this.weight = weight;
+
+
+    public double getGrad() {
+        return grad;
+    }
+
+    public void setGrad(double grad) {
+        this.grad = grad;
+    }
+
+    public double getOldDeltaWeight() {
+        return oldDeltaWeight;
     }
 }

@@ -12,7 +12,7 @@ public class Arguments {
 
         Option momentum = Option.builder()
                 .longOpt("momentum")
-                .desc("Momentum value")
+                .desc("Momentum value.")
                 .required(false)
                 .type(Double.class)
                 .hasArg()
@@ -20,7 +20,7 @@ public class Arguments {
 
         Option learningRate = Option.builder()
                 .longOpt("learning-rate")
-                .desc("Learning rate value")
+                .desc("Learning rate value.")
                 .required(false)
                 .type(Double.class)
                 .hasArg()
@@ -28,7 +28,7 @@ public class Arguments {
 
         Option hiddenLayerBias = Option.builder()
                 .longOpt("hidden-bias")
-                .desc("Hidden layer BIAS value")
+                .desc("Hidden layer BIAS value.")
                 .required(false)
                 .type(Double.class)
                 .hasArg()
@@ -36,7 +36,7 @@ public class Arguments {
 
         Option outputLayerBias = Option.builder()
                 .longOpt("output-bias")
-                .desc("Output layer BIAS value")
+                .desc("Output layer BIAS value.")
                 .required(false)
                 .type(Double.class)
                 .hasArg()
@@ -44,7 +44,7 @@ public class Arguments {
 
         Option outputNeurons = Option.builder()
                 .longOpt("output-neurons")
-                .desc("Amount of output neurons")
+                .desc("Amount of output neurons.")
                 .required(true)
                 .type(Integer.class)
                 .hasArg()
@@ -52,7 +52,7 @@ public class Arguments {
 
         Option hiddenNeurons = Option.builder()
                 .longOpt("hidden-neurons")
-                .desc("Amount of hidden neurons")
+                .desc("Amount of hidden neurons.")
                 .required(true)
                 .type(Integer.class)
                 .hasArg()
@@ -60,11 +60,33 @@ public class Arguments {
 
         Option inputNeurons = Option.builder()
                 .longOpt("input-neurons")
-                .desc("Amount of input neurons")
+                .desc("Amount of input neurons.")
                 .required(true)
                 .type(Integer.class)
                 .hasArg()
                 .build();
+
+        Option trainingSetPath = Option.builder()
+                .longOpt("training-set")
+                .desc("Path to file with training set.")
+                .type(String.class)
+                .hasArg()
+                .build();
+
+        Option idealResultsPath = Option.builder()
+                .longOpt("ideal-set")
+                .desc("Path to file with expected results.")
+                .type(String.class)
+                .hasArg()
+                .build();
+
+        Option inputSetPath = Option.builder()
+                .longOpt("input-set")
+                .desc("Path to file with vectors needed to be classified.")
+                .type(String.class)
+                .hasArg()
+                .build();
+
         options
                 .addOption(momentum)
                 .addOption(learningRate)
@@ -72,7 +94,11 @@ public class Arguments {
                 .addOption(outputLayerBias)
                 .addOption(inputNeurons)
                 .addOption(hiddenNeurons)
-                .addOption(outputNeurons);
+                .addOption(outputNeurons)
+                .addOption(trainingSetPath)
+                .addOption(idealResultsPath)
+                .addOption(inputSetPath)
+        ;
 
         CommandLineParser parser = new DefaultParser();
 

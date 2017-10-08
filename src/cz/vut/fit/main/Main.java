@@ -27,7 +27,7 @@ public class Main {
 
         // Read input file
         InputReader inputReader = new InputReader();
-        inputReader.setPath("G:\\IdeaProjects\\ClassificationBP\\src\\resources\\ZooNormalizedData");
+        inputReader.setPath(arguments.getCommandLine().getOptionValue("training-set"));
         List<List<Double>> input;
         try {
             input = inputReader.getContent();
@@ -36,8 +36,9 @@ public class Main {
             return;
         }
 
+        // Read ideal results
         List<List<Double>> ideal;
-        inputReader.setPath("G:\\IdeaProjects\\ClassificationBP\\src\\resources\\ZooIdeal");
+        inputReader.setPath(arguments.getCommandLine().getOptionValue("ideal-set"));
 
         try {
             ideal = inputReader.getContent();
@@ -58,8 +59,22 @@ public class Main {
             }
             System.out.println("Iteration: #" + i + " Error: " + network.getError(ideal.size()));
         }
+
+
+
+        // Read file with set need being classified
+        List<List<Double>> inputSet;
+        inputReader.setPath(arguments.getCommandLine().getOptionValue("input-set"));
+
+        try {
+            inputSet = inputReader.getContent();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
         System.out.println("Recall");
-        for (List<Double> anInput : input) {
+        for (List<Double> anInput : inputSet) {
             for (Double anAnInput : anInput) {
                 System.out.print(anAnInput + " : ");
             }

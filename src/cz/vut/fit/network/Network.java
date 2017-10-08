@@ -69,8 +69,8 @@ public class Network {
      * Count RootMSE
      * @return RootMSE
      */
-    public double getError(){
-        double err = Math.sqrt(globalError / outputNeurons.length);
+    public double getError(int len){
+        double err = Math.sqrt(globalError / len * outputNeurons.length);
         globalError = 0; // clear the accumulator
         return err;
     }

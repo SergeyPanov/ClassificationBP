@@ -40,7 +40,7 @@ public class Main {
 
         System.out.println(ideal);
 
-        for (int i = 0; i < 10_000_0; ++ i){
+        for (int i = 0; i < 10_000; ++ i){
             for (int j = 0 ; j < input.size(); ++ j){
                 Double[] inputLine = input.get(j).toArray(new Double[]{});
                 network.calculateOutputs(inputLine);
@@ -48,7 +48,7 @@ public class Main {
                 Double[] idealLine = ideal.get(j).toArray(new Double[]{});
                 network.learn(idealLine);
             }
-            System.out.println("Iteration: #" + i + " Error: " + network.getError());
+            System.out.println("Iteration: #" + i + " Error: " + network.getError(ideal.size()));
         }
         System.out.println("Recall");
         for (List<Double> anInput : input) {

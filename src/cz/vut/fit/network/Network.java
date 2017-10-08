@@ -12,62 +12,12 @@ import cz.vut.fit.synapse.Synapse;
  */
 public class Network {
 
+    /**
+     * Layers.
+     */
     private InputNeuron[] inputNeurons;
     private HiddenNeuron[] hiddenNeurons;
     private OutputNeuron[] outputNeurons;
-
-
-    /**
-     * Count of input neurons.
-     */
-    private int inputCount;
-
-    /**
-     * Count of hidden neurons.
-     */
-    private int hiddenCount;
-
-    /**
-     * Count of output neurons.
-     */
-    private int outputCount;
-
-    /**
-     * Total count of neurons.
-     */
-    private int totalNeurons;
-
-    /**
-     * The threshold values along with the weights.
-     */
-    private double[] thresholds;
-
-    /**
-     * The threshold deltas.
-     */
-    private double thresholdDelta[];
-
-    /**
-     * The accumulation of the threshold deltas.
-     */
-    private double accThresholdDelta[];
-
-
-    /**
-     * Accumulates synapse's delta's for training.
-     */
-    private double accSynapseDelta[];
-
-    /**
-     * The changes should be applied to the synapse's weight.
-     */
-    private double synapseDelta[];
-
-
-    /**
-     * Total synapses in the network.
-     */
-    private int totalSynapses;
 
     /**
      * The learning rate.
@@ -80,20 +30,9 @@ public class Network {
     private final double momentum;
 
     /**
-     * Error from the last calculation.
-     */
-    private double error[];
-
-    /**
-     * The global RootMSE.
+     * The global error.
      */
     private double globalError;
-
-    /**
-     * Changes in the errors.
-     */
-    private double errorDelta[];
-
 
     public Network(int inputCount,
                    int hiddenCount,
@@ -105,44 +44,43 @@ public class Network {
         this.learnRate = learnRate;
         this.momentum = momentum;
 
-
-        this.totalNeurons = inputCount + hiddenCount + outputCount;
-
-        this.thresholds = new double[this.totalNeurons];
-        this.thresholdDelta = new double[this.totalNeurons];
-        this.accThresholdDelta = new double[this.totalNeurons];
-        
-        this.totalSynapses = inputCount * hiddenCount + hiddenCount * outputCount;
-        this.synapseDelta = new double[totalSynapses];
-        this.accSynapseDelta = new double[totalSynapses];
-
-
-        this.error = new double[totalNeurons];
-        this.errorDelta = new double[totalNeurons];
-
         this.inputNeurons = new InputNeuron[inputCount];
         for ( i = 0 ; i < inputCount; ++ i ){
             inputNeurons[i] = new InputNeuron(0);
         }
 
         this.hiddenNeurons = new HiddenNeuron[hiddenCount];
+        double hiddenLayerBIAS = 1 - (Math.random());
         for ( i = 0;  i < hiddenCount; ++ i){
             hiddenNeurons[i] = new HiddenNeuron();
+            hiddenNeurons[i].setBias(hiddenLayerBIAS);
         }
+
+        double outputLayerBIAS = 1 - (Math.random());
 
         this.outputNeurons = new OutputNeuron[outputCount];
         for ( i = 0 ; i < outputCount; ++ i ){
             outputNeurons[i] = new OutputNeuron();
+            outputNeurons[i].setBias(outputLayerBIAS);
         }
     }
 
-    public double getError(int len){
-        double err = Math.sqrt(globalError / (len * outputCount));
+    /**
+     * Count RootMSE
+     * @return RootMSE
+     */
+    public double getError(){
+        double err = Math.sqrt(globalError / outputNeurons.length);
         globalError = 0; // clear the accumulator
         return err;
     }
 
-    public double[] calculateOutputs(double input[]){
+    /**
+     * Calculate outputs based on input.
+     * @param input input of the neural network.
+     * @return values of the hidden layer.
+     */
+    public double[] calculateOutputs(Double input[]){
 
         for (int i = 0; i < input.length; ++ i){
             inputNeurons[i].setFire(input[i]);
@@ -167,7 +105,11 @@ public class Network {
     }
 
 
-    public void learn(double ideal[]){
+    /**
+     * Count sigmas, gradients, deltas and adjust weights.
+     * @param ideal ideal result.
+     */
+    public void learn(Double ideal[]){
         /*
         Calculate sigma for output neurons.
          */
@@ -223,9 +165,13 @@ public class Network {
             }
         }
 
-
-
     }
+
+    /**
+     * Connect two layers by synapses.
+     * @param layer1 "From" layer.
+     * @param layer2 "To" layer.
+     */
 
     private void connectLayers(Neuron[] layer1, Neuron[] layer2){
         for (Neuron neuron1:
@@ -252,13 +198,12 @@ public class Network {
      * Reset the network.
      */
     public void reset(){
-
         /*
         Connect input neurons and hidden neurons.
          */
         connectLayers(inputNeurons, hiddenNeurons);
         connectLayers(hiddenNeurons, outputNeurons);
-        return;
+
     }
 
 }

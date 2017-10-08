@@ -15,6 +15,8 @@ public class Neuron {
 
     private double sigma;
 
+    private double bias;
+
 
     private double sigmoid(double sum) {
         return 1.0 / (1 + Math.exp(-1.0 * sum));
@@ -33,9 +35,7 @@ public class Neuron {
         fire = 0.5 - (Math.random());
     }
 
-    public ArrayList<Synapse> getInputSynapses(){
-        return inputSynapses;
-    }
+
 
     public ArrayList<Synapse> getOutputSynapses(){
         return outputSynapses;
@@ -43,7 +43,7 @@ public class Neuron {
 
     /**
      * Init neuron with "fire" value.
-     * @param fire
+     * @param fire value should be fired by neuron.
      */
     Neuron(double fire){
         this();
@@ -51,7 +51,7 @@ public class Neuron {
     }
 
     public void calculateFile(){
-        fire = sigmoid(inputSynapses.stream().mapToDouble(s -> s.getWeight() * s.getFrom().getFire()).sum());
+        fire = sigmoid(inputSynapses.stream().mapToDouble(s -> s.getWeight() * s.getFrom().getFire()).sum() + bias);
     }
 
     public void addInputSynapse(Synapse input){
@@ -75,5 +75,9 @@ public class Neuron {
 
     public void setSigma(double sigma) {
         this.sigma = sigma;
+    }
+
+    public void setBias(double bias) {
+        this.bias = bias;
     }
 }

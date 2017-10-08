@@ -31,7 +31,7 @@ public class Synapse {
 
     /**
      * Adjust weight base on the delta.
-     * @param delta
+     * @param delta step from old weight to new weight.
      */
     public void adjustWeight(double delta){
         oldDeltaWeight = delta;

@@ -38,7 +38,10 @@ public class Network {
                    int hiddenCount,
                    int outputCount,
                    double learnRate,
-                   double momentum){
+                   double momentum,
+                   double hiddenLayerBias,
+                   double outputLayerBias
+                   ){
         int i;
 
         this.learnRate = learnRate;
@@ -50,18 +53,15 @@ public class Network {
         }
 
         this.hiddenNeurons = new HiddenNeuron[hiddenCount];
-        double hiddenLayerBIAS = 1 - (Math.random());
         for ( i = 0;  i < hiddenCount; ++ i){
             hiddenNeurons[i] = new HiddenNeuron();
-            hiddenNeurons[i].setBias(hiddenLayerBIAS);
+            hiddenNeurons[i].setBias(hiddenLayerBias);
         }
-
-        double outputLayerBIAS = 1 - (Math.random());
 
         this.outputNeurons = new OutputNeuron[outputCount];
         for ( i = 0 ; i < outputCount; ++ i ){
             outputNeurons[i] = new OutputNeuron();
-            outputNeurons[i].setBias(outputLayerBIAS);
+            outputNeurons[i].setBias(outputLayerBias);
         }
     }
 

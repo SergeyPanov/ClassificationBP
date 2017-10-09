@@ -4,13 +4,37 @@ import cz.vut.fit.network.Network;
 import cz.vut.fit.options.Arguments;
 import cz.vut.fit.reader.InputReader;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
 
-        Arguments arguments = new Arguments(args);
+    private static Network deserializeNetwork() throws IOException, ClassNotFoundException {
+        Network deserializedNetwork;
+        ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(arguments.getCommandLine().getOptionValue("trained-network")));
+
+        deserializedNetwork = (Network) objectInputStream.readObject();
+        objectInputStream.close();
+        return deserializedNetwork;
+    }
+
+
+    private static void serializeNetwork(Network network) throws IOException {
+        File file = new File(arguments.getCommandLine().getOptionValue("training-set"));
+
+        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file.getName() + ".nnet"));
+        out.writeObject(network);
+        out.close();
+
+    }
+
+    private static Arguments arguments;
+
+    /**
+     * Method is called for learning procedure.
+     */
+    private static void learn(){
+
 
         Network network = new Network(
                 Integer.valueOf(arguments.getCommandLine().getOptionValue("input-neurons")),
@@ -47,9 +71,7 @@ public class Main {
             return;
         }
 
-        System.out.println(ideal);
-
-        for (int i = 0; i < 10_000; ++ i){
+        for (int i = 0; i < 10_00; ++ i){
             for (int j = 0 ; j < input.size(); ++ j){
                 Double[] inputLine = input.get(j).toArray(new Double[]{});
                 network.calculateOutputs(inputLine);
@@ -60,7 +82,21 @@ public class Main {
             System.out.println("Iteration: #" + i + " Error: " + network.getError(ideal.size()));
         }
 
+        try {
+            serializeNetwork(network);
+        } catch (IOException e) {
+            System.err.println("The serialization of the network was fell.");
+            e.printStackTrace();
+        }
 
+    }
+
+    private static void classification() throws IOException, ClassNotFoundException {
+        Network network;
+
+        network = deserializeNetwork();
+
+        InputReader inputReader = new InputReader();
 
         // Read file with set need being classified
         List<List<Double>> inputSet;
@@ -79,7 +115,7 @@ public class Main {
                 System.out.print(anAnInput + " : ");
             }
             Double[] inputAux = anInput.toArray(new Double[]{});
-            double out[] = network.calculateOutputs(inputAux);
+            Double out[] = network.calculateOutputs(inputAux);
             System.out.print("= ");
             for (double d :
                     out) {
@@ -88,5 +124,21 @@ public class Main {
             System.out.println("");
         }
 
+    }
+
+    public static void main(String[] args) throws Exception {
+
+        arguments = new Arguments(args);
+
+        /*
+        If training-set parameter is set the learning method should proceed
+         */
+        if (arguments.getCommandLine().getOptionValue("training-set") != null){
+            learn();
+        }else {
+            if (arguments.getCommandLine().getOptionValue("input-set") != null){
+                classification();
+            }
+        }
     }
 }

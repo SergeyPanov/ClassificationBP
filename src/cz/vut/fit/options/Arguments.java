@@ -86,6 +86,13 @@ public class Arguments {
                 .type(String.class)
                 .hasArg()
                 .build();
+        Option trainedNetwork = Option.builder()
+                .longOpt("trained-network")
+                .desc("Path to the trained network.")
+                .type(String.class)
+                .hasArg()
+                .required(false)
+                .build();
 
         options
                 .addOption(momentum)
@@ -98,6 +105,7 @@ public class Arguments {
                 .addOption(trainingSetPath)
                 .addOption(idealResultsPath)
                 .addOption(inputSetPath)
+                .addOption(trainedNetwork)
         ;
 
         CommandLineParser parser = new DefaultParser();

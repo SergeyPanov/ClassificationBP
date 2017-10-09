@@ -2,27 +2,28 @@ package cz.vut.fit.neuron;
 
 import cz.vut.fit.synapse.Synapse;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Neuron {
+public class Neuron  implements Serializable{
     /**
      * Output of the neuron.
      */
-    private double fire;
+    private Double fire;
 
     private ArrayList<Synapse> inputSynapses;
     private ArrayList<Synapse> outputSynapses;
 
-    private double sigma;
+    private Double sigma;
 
-    private double bias;
+    private Double bias;
 
 
-    private double sigmoid(double sum) {
+    private Double sigmoid(Double sum) {
         return 1.0 / (1 + Math.exp(-1.0 * sum));
     }
 
-    public double derivation(){
+    public Double derivation(){
         return (1 - fire) * fire;
     }
 
@@ -45,7 +46,7 @@ public class Neuron {
      * Init neuron with "fire" value.
      * @param fire value should be fired by neuron.
      */
-    Neuron(double fire){
+    Neuron(Double fire){
         this();
         this.fire = fire;
     }
@@ -61,23 +62,23 @@ public class Neuron {
         outputSynapses.add(output);
     }
 
-    public double getFire() {
+    public Double getFire() {
         return fire;
     }
 
-    public void setFire(double fire) {
+    public void setFire(Double fire) {
         this.fire = fire;
     }
 
-    public double getSigma() {
+    public Double getSigma() {
         return sigma;
     }
 
-    public void setSigma(double sigma) {
+    public void setSigma(Double sigma) {
         this.sigma = sigma;
     }
 
-    public void setBias(double bias) {
+    public void setBias(Double bias) {
         this.bias = bias;
     }
 }

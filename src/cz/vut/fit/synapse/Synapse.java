@@ -2,7 +2,9 @@ package cz.vut.fit.synapse;
 
 import cz.vut.fit.neuron.Neuron;
 
-public class Synapse {
+import java.io.Serializable;
+
+public class Synapse implements Serializable {
     /**
      * Left neuron.
      */
@@ -16,11 +18,11 @@ public class Synapse {
     /**
      * Weight of the synapse.
      */
-    private double weight;
+    private Double weight;
 
-    private double oldDeltaWeight;
+    private Double oldDeltaWeight;
 
-    private double grad;
+    private Double grad;
 
 
 
@@ -33,7 +35,7 @@ public class Synapse {
      * Adjust weight base on the delta.
      * @param delta step from old weight to new weight.
      */
-    public void adjustWeight(double delta){
+    public void adjustWeight(Double delta){
         oldDeltaWeight = delta;
         weight += delta;
     }
@@ -54,21 +56,21 @@ public class Synapse {
         this.to = to;
     }
 
-    public double getWeight() {
+    public Double getWeight() {
         return weight;
     }
 
 
 
-    public double getGrad() {
+    public Double getGrad() {
         return grad;
     }
 
-    public void setGrad(double grad) {
+    public void setGrad(Double grad) {
         this.grad = grad;
     }
 
-    public double getOldDeltaWeight() {
+    public Double getOldDeltaWeight() {
         return oldDeltaWeight;
     }
 }

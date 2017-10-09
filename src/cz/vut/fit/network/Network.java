@@ -6,11 +6,13 @@ import cz.vut.fit.neuron.Neuron;
 import cz.vut.fit.neuron.OutputNeuron;
 import cz.vut.fit.synapse.Synapse;
 
+import java.io.Serializable;
+
 
 /**
  * Network class represent network with single layer of hidden neurons.
  */
-public class Network {
+public class Network implements Serializable {
 
     /**
      * Layers.
@@ -22,27 +24,29 @@ public class Network {
     /**
      * The learning rate.
      */
-    private final double learnRate;
+    private final Double learnRate;
 
     /**
      * The momentum.
      */
-    private final double momentum;
+    private final Double momentum;
 
     /**
      * The global error.
      */
-    private double globalError;
+    private Double globalError;
 
     public Network(int inputCount,
                    int hiddenCount,
                    int outputCount,
-                   double learnRate,
-                   double momentum,
-                   double hiddenLayerBias,
-                   double outputLayerBias
+                   Double learnRate,
+                   Double momentum,
+                   Double hiddenLayerBias,
+                   Double outputLayerBias
                    ){
         int i;
+
+        globalError = 0.0;
 
         this.learnRate = learnRate;
         this.momentum = momentum;
@@ -69,9 +73,9 @@ public class Network {
      * Count RootMSE
      * @return RootMSE
      */
-    public double getError(int len){
-        double err = Math.sqrt(globalError / len * outputNeurons.length);
-        globalError = 0; // clear the accumulator
+    public Double getError(int len){
+        Double err = Math.sqrt(globalError / len * outputNeurons.length);
+        globalError = 0.0; // clear the accumulator
         return err;
     }
 
@@ -80,7 +84,7 @@ public class Network {
      * @param input input of the neural network.
      * @return values of the hidden layer.
      */
-    public double[] calculateOutputs(Double input[]){
+    public Double[] calculateOutputs(Double[] input){
 
         for (int i = 0; i < input.length; ++ i){
             inputNeurons[i].setFire(input[i]);
@@ -93,7 +97,7 @@ public class Network {
 
         int i = 0;
 
-        double[] result = new double[outputNeurons.length];
+        Double[] result = new Double[outputNeurons.length];
 
         for (OutputNeuron outputNeuron:
              outputNeurons) {
@@ -117,7 +121,7 @@ public class Network {
 
             globalError += (ideal[i] - outputNeurons[i].getFire()) * (ideal[i] - outputNeurons[i].getFire());
 
-            double outNeuronDerivation = outputNeurons[i].derivation();
+            Double outNeuronDerivation = outputNeurons[i].derivation();
 
             outputNeurons[i].setSigma((ideal[i] - outputNeurons[i].getFire()) * outNeuronDerivation );
         }
@@ -127,9 +131,9 @@ public class Network {
          */
         for (HiddenNeuron hiddenNeuron:
              hiddenNeurons) {
-            double hiddenNeuronDerivation = hiddenNeuron.derivation();
+            Double hiddenNeuronDerivation = hiddenNeuron.derivation();
 
-            double sum = hiddenNeuron.getOutputSynapses().stream().mapToDouble(synapse -> synapse.getWeight() * synapse.getTo().getSigma()).sum();
+            Double sum = hiddenNeuron.getOutputSynapses().stream().mapToDouble(synapse -> synapse.getWeight() * synapse.getTo().getSigma()).sum();
 
             hiddenNeuron.setSigma(sum * hiddenNeuronDerivation);
 
@@ -145,7 +149,7 @@ public class Network {
              */
             for (Synapse outSynapse:
                  hiddenNeuron.getOutputSynapses()) {
-                double deltaW = learnRate * outSynapse.getGrad() + momentum * outSynapse.getOldDeltaWeight();
+                Double deltaW = learnRate * outSynapse.getGrad() + momentum * outSynapse.getOldDeltaWeight();
                 outSynapse.adjustWeight(deltaW);
             }
         }
@@ -160,7 +164,7 @@ public class Network {
             for (Synapse synapse:
                  inputNeuron.getOutputSynapses()) {
                 synapse.setGrad(inputNeuron.getFire() * synapse.getTo().getSigma());
-                double deltaW = learnRate * synapse.getGrad() + momentum * synapse.getOldDeltaWeight();
+                Double deltaW = learnRate * synapse.getGrad() + momentum * synapse.getOldDeltaWeight();
                 synapse.adjustWeight(deltaW);
             }
         }

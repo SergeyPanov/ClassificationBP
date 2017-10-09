@@ -4,3 +4,4 @@
 /out/
 /src/resources/
 /src/libs/
+**/*.nnet

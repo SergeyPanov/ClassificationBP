@@ -93,6 +93,20 @@ public class Arguments {
                 .hasArg()
                 .required(false)
                 .build();
+        Option rootMSEthreshold = Option.builder()
+                .longOpt("root-mse-threshold")
+                .desc("Desired precision set by RootMSE for training.")
+                .required(false)
+                .type(Double.class)
+                .hasArg()
+                .build();
+        Option iterationsCount = Option.builder()
+                .longOpt("iterations-number")
+                .desc("Amount of iterations for training.")
+                .required(false)
+                .type(Integer.class)
+                .hasArg()
+                .build();
 
         options
                 .addOption(momentum)
@@ -106,6 +120,8 @@ public class Arguments {
                 .addOption(idealResultsPath)
                 .addOption(inputSetPath)
                 .addOption(trainedNetwork)
+                .addOption(rootMSEthreshold)
+                .addOption(iterationsCount)
         ;
 
         CommandLineParser parser = new DefaultParser();

@@ -3,6 +3,7 @@ package cz.vut.fit.main;
 import cz.vut.fit.network.Network;
 import cz.vut.fit.options.Arguments;
 import cz.vut.fit.reader.InputReader;
+import cz.vut.fit.stopcondition.StopCondition;
 
 import java.io.*;
 import java.util.List;
@@ -11,7 +12,8 @@ public class Main {
 
     private static Network deserializeNetwork() throws IOException, ClassNotFoundException {
         Network deserializedNetwork;
-        ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(arguments.getCommandLine().getOptionValue("trained-network")));
+        ObjectInputStream objectInputStream;
+        objectInputStream = new ObjectInputStream(new FileInputStream(arguments.getCommandLine().getOptionValue("trained-network")));
 
         deserializedNetwork = (Network) objectInputStream.readObject();
         objectInputStream.close();
@@ -33,7 +35,7 @@ public class Main {
     /**
      * Method is called for learning procedure.
      */
-    private static void learn(){
+    private static void learn() throws IOException {
 
 
         Network network = new Network(
@@ -53,25 +55,39 @@ public class Main {
         InputReader inputReader = new InputReader();
         inputReader.setPath(arguments.getCommandLine().getOptionValue("training-set"));
         List<List<Double>> input;
-        try {
-            input = inputReader.getContent();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
+
+        input = inputReader.getContent();
+
 
         // Read ideal results
         List<List<Double>> ideal;
         inputReader.setPath(arguments.getCommandLine().getOptionValue("ideal-set"));
 
-        try {
-            ideal = inputReader.getContent();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
 
-        for (int i = 0; i < 10_00; ++ i){
+        ideal = inputReader.getContent();
+
+
+        int iterations;
+
+        StopCondition stopCondition = StopCondition.THRESHOLD;
+        if (arguments.getCommandLine().getOptionValue("iterations-number") != null){
+            stopCondition = StopCondition.ITERATIONS;
+        }
+        iterations = Integer.valueOf(arguments.getCommandLine().getOptionValue("iterations-number", "-1"));
+
+        double rootMSEthreshold;
+
+        if (arguments.getCommandLine().getOptionValue("root-mse-threshold") != null){
+            stopCondition = StopCondition.THRESHOLD;
+        }
+        rootMSEthreshold = Double.valueOf(arguments.getCommandLine().getOptionValue("root-mse-threshold", "0.3"));
+
+
+        boolean isFinish = false;
+        int i = 0;
+
+        while (!isFinish){
+
             for (int j = 0 ; j < input.size(); ++ j){
                 Double[] inputLine = input.get(j).toArray(new Double[]{});
                 network.calculateOutputs(inputLine);
@@ -79,7 +95,18 @@ public class Main {
                 Double[] idealLine = ideal.get(j).toArray(new Double[]{});
                 network.learn(idealLine);
             }
-            System.out.println("Iteration: #" + i + " Error: " + network.getError(ideal.size()));
+            double rootMSE = network.getError(ideal.size());
+            System.out.println("Iteration: #" + i + " Error: " + rootMSE);
+            ++i;
+
+            switch (stopCondition){
+                case THRESHOLD:
+                    if (rootMSE <= rootMSEthreshold) isFinish = true;
+                    break;
+                case ITERATIONS:
+                    if (i >= iterations) isFinish = true;
+                    break;
+            }
         }
 
         try {

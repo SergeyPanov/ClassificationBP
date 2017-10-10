@@ -24,7 +24,7 @@ public class Main {
     private static void serializeNetwork(Network network) throws IOException {
         File file = new File(arguments.getCommandLine().getOptionValue("training-set"));
 
-        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file.getName() + ".nnet"));
+        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(arguments.getCommandLine().getOptionValue("serialize-to", file.getName() + ".nnet")));
         out.writeObject(network);
         out.close();
 
@@ -35,7 +35,18 @@ public class Main {
     /**
      * Method is called for learning procedure.
      */
-    private static void learn() throws IOException {
+    private static void learn() throws Exception {
+
+        if (
+                            arguments.getCommandLine().getOptionValue("input-neurons") == null ||
+                            Integer.valueOf(arguments.getCommandLine().getOptionValue("input-neurons")) <= 0||
+                            arguments.getCommandLine().getOptionValue("hidden-neurons") == null ||
+                            Integer.valueOf(arguments.getCommandLine().getOptionValue("hidden-neurons")) <= 0 ||
+                            arguments.getCommandLine().getOptionValue("output-neurons") == null ||
+                            Integer.valueOf(arguments.getCommandLine().getOptionValue("output-neurons")) <= 0
+                ){
+            throw new Exception("Parameters 'input-neurons', 'hidden-neurons' and output-neurons are required for training network and should be > 0.");
+        }
 
 
         Network network = new Network(

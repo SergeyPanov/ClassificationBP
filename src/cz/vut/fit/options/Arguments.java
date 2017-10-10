@@ -42,10 +42,10 @@ public class Arguments {
                 .hasArg()
                 .build();
 
-        Option outputNeurons = Option.builder()
-                .longOpt("output-neurons")
-                .desc("Amount of output neurons.")
-                .required(true)
+        Option inputNeurons = Option.builder()
+                .longOpt("input-neurons")
+                .desc("Amount of input neurons.")
+                .required(false)
                 .type(Integer.class)
                 .hasArg()
                 .build();
@@ -53,15 +53,15 @@ public class Arguments {
         Option hiddenNeurons = Option.builder()
                 .longOpt("hidden-neurons")
                 .desc("Amount of hidden neurons.")
-                .required(true)
+                .required(false)
                 .type(Integer.class)
                 .hasArg()
                 .build();
 
-        Option inputNeurons = Option.builder()
-                .longOpt("input-neurons")
-                .desc("Amount of input neurons.")
-                .required(true)
+        Option outputNeurons = Option.builder()
+                .longOpt("output-neurons")
+                .desc("Amount of output neurons.")
+                .required(false)
                 .type(Integer.class)
                 .hasArg()
                 .build();
@@ -86,6 +86,7 @@ public class Arguments {
                 .type(String.class)
                 .hasArg()
                 .build();
+
         Option trainedNetwork = Option.builder()
                 .longOpt("trained-network")
                 .desc("Path to the trained network.")
@@ -93,6 +94,7 @@ public class Arguments {
                 .hasArg()
                 .required(false)
                 .build();
+
         Option rootMSEthreshold = Option.builder()
                 .longOpt("root-mse-threshold")
                 .desc("Desired precision set by RootMSE for training.")
@@ -100,11 +102,20 @@ public class Arguments {
                 .type(Double.class)
                 .hasArg()
                 .build();
+
         Option iterationsCount = Option.builder()
                 .longOpt("iterations-number")
                 .desc("Amount of iterations for training.")
                 .required(false)
                 .type(Integer.class)
+                .hasArg()
+                .build();
+
+        Option serializeTo = Option.builder()
+                .longOpt("serialize-to")
+                .desc("Path to the file for serialization of trained network")
+                .required(false)
+                .type(String.class)
                 .hasArg()
                 .build();
 
@@ -122,6 +133,7 @@ public class Arguments {
                 .addOption(trainedNetwork)
                 .addOption(rootMSEthreshold)
                 .addOption(iterationsCount)
+                .addOption(serializeTo)
         ;
 
         CommandLineParser parser = new DefaultParser();

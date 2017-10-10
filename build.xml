@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="ClassificationBP">
+
+    <property name="lib.dir" value="libs"/>
+    <property name="src.dir" value="src"/>
+    <property name="build.dir" value="build"/>
+    <property name="jars.dir" value="jars"/>
+    <property name="main.class" value="cz.vut.fit.main.Main"/>
+    <property name="commons-cli" value="commons-cli-1.4.jar"/>
+
+
+    <path id="master-classpath">
+        <fileset dir="${lib.dir}">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+
+    <target name="build" description="Compilation .java files to .class">
+        <mkdir dir="${build.dir}"/>
+
+        <javac destdir="${build.dir}">
+            <src path="${src.dir}"/>
+            <classpath refid="master-classpath"/>
+        </javac>
+    </target>
+
+    <target name="package" description="Package whole project to runnable .jar file" depends="build">
+        <mkdir dir="${jars.dir}"/>
+
+        <jar destfile="${jars.dir}/Classificator.jar" basedir="${build.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="${main.class}"/>
+                <attribute name="Class-Path" value="../${lib.dir}/${commons-cli}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="clean" description="Remove compiled files and packaged jar files">
+        <delete includeemptydirs="true">
+            <fileset dir="${build.dir}"/>
+            <fileset dir="${jars.dir}"/>
+        </delete>
+    </target>
+</project>

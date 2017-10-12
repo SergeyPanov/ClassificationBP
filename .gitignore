@@ -3,8 +3,7 @@
 
 /out/
 /src/resources/
-/src/libs/
+libs/
 **/*.nnet
-/libs/
 /build/
 /jars/

@@ -6,7 +6,9 @@ import cz.vut.fit.reader.InputReader;
 import cz.vut.fit.stopcondition.StopCondition;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class Main {
 
@@ -40,22 +42,34 @@ public class Main {
         if (
                             arguments.getCommandLine().getOptionValue("input-neurons") == null ||
                             Integer.valueOf(arguments.getCommandLine().getOptionValue("input-neurons")) <= 0||
-                            arguments.getCommandLine().getOptionValue("hidden-neurons") == null ||
-                            Integer.valueOf(arguments.getCommandLine().getOptionValue("hidden-neurons")) <= 0 ||
                             arguments.getCommandLine().getOptionValue("output-neurons") == null ||
-                            Integer.valueOf(arguments.getCommandLine().getOptionValue("output-neurons")) <= 0
+                            Integer.valueOf(arguments.getCommandLine().getOptionValue("output-neurons")) <= 0 ||
+                            arguments.getCommandLine().getOptionValues("hidden-layers") == null ||
+                            Arrays.asList(arguments.getCommandLine().getOptionValues("hidden-layers")).contains("0")
                 ){
-            throw new Exception("Parameters 'input-neurons', 'hidden-neurons' and output-neurons are required for training network and should be > 0.");
+            throw new Exception("Parameters 'input-neurons', 'hidden-layers' and 'output-neurons' are required for training network and should be > 0.");
+        }
+
+        double[] hiddenBiases = new double[arguments.getCommandLine().getOptionValues("hidden-layers").length];
+        for (int i = 0; i < hiddenBiases.length; ++ i){
+            hiddenBiases[i] = 0.7;
+        }
+
+        if (arguments.getCommandLine().getOptionValues("hidden-biases") != null){
+            if (arguments.getCommandLine().getOptionValues("hidden-biases").length == arguments.getCommandLine().getOptionValues("hidden-layers").length)
+                hiddenBiases = Stream.of(arguments.getCommandLine().getOptionValues("hidden-biases")).mapToDouble(Double::valueOf).toArray();
+            else
+                throw new Exception("Amount of hidden biases should be equal to amount of hidden layers.");
         }
 
 
         Network network = new Network(
                 Integer.valueOf(arguments.getCommandLine().getOptionValue("input-neurons")),
-                Integer.valueOf(arguments.getCommandLine().getOptionValue("hidden-neurons")),
+                Stream.of(arguments.getCommandLine().getOptionValues("hidden-layers")).mapToInt(Integer::valueOf).toArray(),
                 Integer.valueOf(arguments.getCommandLine().getOptionValue("output-neurons")),
                 Double.valueOf(arguments.getCommandLine().getOptionValue("learning-rate", "0.7")),
                 Double.valueOf(arguments.getCommandLine().getOptionValue("momentum", "0.3")),
-                Double.valueOf(arguments.getCommandLine().getOptionValue("hidden-bias", "0.7")),
+                hiddenBiases,
                 Double.valueOf(arguments.getCommandLine().getOptionValue("output-bias", "0.7"))
         );
 

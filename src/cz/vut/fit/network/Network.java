@@ -7,6 +7,8 @@ import cz.vut.fit.neuron.OutputNeuron;
 import cz.vut.fit.synapse.Synapse;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -18,7 +20,7 @@ public class Network implements Serializable {
      * Layers.
      */
     private InputNeuron[] inputNeurons;
-    private HiddenNeuron[] hiddenNeurons;
+    private List<HiddenNeuron[]> hiddenLayers;
     private OutputNeuron[] outputNeurons;
 
     /**
@@ -37,11 +39,11 @@ public class Network implements Serializable {
     private Double globalError;
 
     public Network(int inputCount,
-                   int hiddenCount,
+                   int[] hiddenCounts,
                    int outputCount,
                    Double learnRate,
                    Double momentum,
-                   Double hiddenLayerBias,
+                   double[] hiddenLayerBias,
                    Double outputLayerBias
                    ){
         int i;
@@ -56,11 +58,17 @@ public class Network implements Serializable {
             inputNeurons[i] = new InputNeuron(0);
         }
 
-        this.hiddenNeurons = new HiddenNeuron[hiddenCount];
-        for ( i = 0;  i < hiddenCount; ++ i){
-            hiddenNeurons[i] = new HiddenNeuron();
-            hiddenNeurons[i].setBias(hiddenLayerBias);
+        this.hiddenLayers = new ArrayList<>();
+
+        for (int hiddenLayerIndex = 0 ; hiddenLayerIndex < hiddenCounts.length ; ++ hiddenLayerIndex){
+            this.hiddenLayers.add(hiddenLayerIndex, new HiddenNeuron[hiddenCounts[hiddenLayerIndex]]);
+
+            for (int hiddenLayerNeuronIndex = 0; hiddenLayerNeuronIndex < hiddenCounts[hiddenLayerIndex]; ++ hiddenLayerNeuronIndex){
+                this.hiddenLayers.get(hiddenLayerIndex)[hiddenLayerNeuronIndex] = new HiddenNeuron();
+                this.hiddenLayers.get(hiddenLayerIndex)[hiddenLayerNeuronIndex].setBias(hiddenLayerBias[hiddenLayerIndex]);
+            }
         }
+
 
         this.outputNeurons = new OutputNeuron[outputCount];
         for ( i = 0 ; i < outputCount; ++ i ){
@@ -90,13 +98,13 @@ public class Network implements Serializable {
             inputNeurons[i].setFire(input[i]);
         }
 
-        for (HiddenNeuron hiddenNeuron :
-                hiddenNeurons) {
-            hiddenNeuron.calculateFile();
+        for (HiddenNeuron[] hiddenLayer:
+                hiddenLayers){
+            for (HiddenNeuron aHiddenLayer : hiddenLayer) {
+                aHiddenLayer.calculateFile();
+            }
         }
-
         int i = 0;
-
         Double[] result = new Double[outputNeurons.length];
 
         for (OutputNeuron outputNeuron:
@@ -127,33 +135,35 @@ public class Network implements Serializable {
         }
 
         /*
-        Hidden layer calculation
+        Hidden layers calculation
          */
-        for (HiddenNeuron hiddenNeuron:
-             hiddenNeurons) {
-            Double hiddenNeuronDerivation = hiddenNeuron.derivation();
+        for (int layerIndex = hiddenLayers.size() - 1; layerIndex >= 0; -- layerIndex) {
 
-            Double sum = hiddenNeuron.getOutputSynapses().stream().mapToDouble(synapse -> synapse.getWeight() * synapse.getTo().getSigma()).sum();
+                for (HiddenNeuron hiddenNeuron:
+                 hiddenLayers.get(layerIndex)) {
+                Double hiddenNeuronDerivation = hiddenNeuron.derivation();
 
-            hiddenNeuron.setSigma(sum * hiddenNeuronDerivation);
+                Double sum = hiddenNeuron.getOutputSynapses().stream().mapToDouble(synapse -> synapse.getWeight() * synapse.getTo().getSigma()).sum();
 
-            /*
-            Calculate gradients for each output synapse.
-             */
-            for (Synapse outSynapse:
-                 hiddenNeuron.getOutputSynapses()) {
-                outSynapse.setGrad(hiddenNeuron.getFire() * outSynapse.getTo().getSigma());
-            }
-            /*
-            Calculate delta W for each synapse.
-             */
-            for (Synapse outSynapse:
-                 hiddenNeuron.getOutputSynapses()) {
-                Double deltaW = learnRate * outSynapse.getGrad() + momentum * outSynapse.getOldDeltaWeight();
-                outSynapse.adjustWeight(deltaW);
+                hiddenNeuron.setSigma(sum * hiddenNeuronDerivation);
+
+                /*
+                Calculate gradients for each output synapse.
+                 */
+                for (Synapse outSynapse:
+                     hiddenNeuron.getOutputSynapses()) {
+                    outSynapse.setGrad(hiddenNeuron.getFire() * outSynapse.getTo().getSigma());
+                }
+                /*
+                Calculate delta W for each synapse.
+                 */
+                for (Synapse outSynapse:
+                     hiddenNeuron.getOutputSynapses()) {
+                    Double deltaW = learnRate * outSynapse.getGrad() + momentum * outSynapse.getOldDeltaWeight();
+                    outSynapse.adjustWeight(deltaW);
+                }
             }
         }
-
 
         /*
         Input layer calculation.
@@ -168,6 +178,8 @@ public class Network implements Serializable {
                 synapse.adjustWeight(deltaW);
             }
         }
+
+
 
     }
 
@@ -205,8 +217,14 @@ public class Network implements Serializable {
         /*
         Connect input neurons and hidden neurons.
          */
-        connectLayers(inputNeurons, hiddenNeurons);
-        connectLayers(hiddenNeurons, outputNeurons);
+
+        connectLayers(inputNeurons, hiddenLayers.get(0));  // Connect input with first hidden
+
+        for (int hiddenLayerIndex = 1; hiddenLayerIndex < hiddenLayers.size() - 1; ++ hiddenLayerIndex){
+            connectLayers(hiddenLayers.get(hiddenLayerIndex -1), hiddenLayers.get(hiddenLayerIndex));
+        }
+
+        connectLayers(hiddenLayers.get(hiddenLayers.size() - 1), outputNeurons);  // Connect last hidden with output
 
     }
 

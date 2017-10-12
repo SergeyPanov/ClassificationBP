@@ -22,7 +22,7 @@ public class Synapse implements Serializable {
 
     private Double oldDeltaWeight;
 
-    private Double grad;
+    private double grad;
 
 
 
@@ -62,11 +62,11 @@ public class Synapse implements Serializable {
 
 
 
-    public Double getGrad() {
+    public double getGrad() {
         return grad;
     }
 
-    public void setGrad(Double grad) {
+    public void setGrad(double grad) {
         this.grad = grad;
     }
 

@@ -14,9 +14,9 @@ public class Neuron  implements Serializable{
     private ArrayList<Synapse> inputSynapses;
     private ArrayList<Synapse> outputSynapses;
 
-    private Double sigma;
+    private double sigma;
 
-    private Double bias;
+    private double bias;
 
 
     private Double sigmoid(Double sum) {
@@ -46,7 +46,7 @@ public class Neuron  implements Serializable{
      * Init neuron with "fire" value.
      * @param fire value should be fired by neuron.
      */
-    Neuron(Double fire){
+    Neuron(double fire){
         this();
         this.fire = fire;
     }
@@ -62,23 +62,23 @@ public class Neuron  implements Serializable{
         outputSynapses.add(output);
     }
 
-    public Double getFire() {
+    public double getFire() {
         return fire;
     }
 
-    public void setFire(Double fire) {
+    public void setFire(double fire) {
         this.fire = fire;
     }
 
-    public Double getSigma() {
+    public double getSigma() {
         return sigma;
     }
 
-    public void setSigma(Double sigma) {
+    public void setSigma(double sigma) {
         this.sigma = sigma;
     }
 
-    public void setBias(Double bias) {
+    public void setBias(double bias) {
         this.bias = bias;
     }
 }

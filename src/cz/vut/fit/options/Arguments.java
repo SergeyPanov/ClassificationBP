@@ -27,11 +27,11 @@ public class Arguments {
                 .build();
 
         Option hiddenLayerBias = Option.builder()
-                .longOpt("hidden-bias")
+                .longOpt("hidden-biases")
                 .desc("Hidden layer BIAS value.")
                 .required(false)
-                .type(Double.class)
-                .hasArg()
+                .type(Double[].class)
+                .hasArgs()
                 .build();
 
         Option outputLayerBias = Option.builder()
@@ -51,11 +51,11 @@ public class Arguments {
                 .build();
 
         Option hiddenNeurons = Option.builder()
-                .longOpt("hidden-neurons")
+                .longOpt("hidden-layers")
                 .desc("Amount of hidden neurons.")
                 .required(false)
-                .type(Integer.class)
-                .hasArg()
+                .type(Integer[].class)
+                .hasArgs()
                 .build();
 
         Option outputNeurons = Option.builder()

@@ -15,10 +15,16 @@ import java.io.Serializable;
 public class Network implements Serializable {
 
     /**
-     * Layers.
+     * Input neurons
      */
     private InputNeuron[] inputNeurons;
+    /**
+     * Hidden neurons
+     */
     private HiddenNeuron[] hiddenNeurons;
+    /**
+     * Output neurons
+     */
     private OutputNeuron[] outputNeurons;
 
     /**
@@ -36,6 +42,16 @@ public class Network implements Serializable {
      */
     private Double globalError;
 
+    /**
+     * Initialize neural network with parameters:
+     * @param inputCount    Number of neurons at the input layer.
+     * @param hiddenCount   Number of neurons at the hidden layer.
+     * @param outputCount   Number of neurons at the output layer.
+     * @param learnRate     The learning rate value(default 0.7).
+     * @param momentum      The momentum value(default 0.3).
+     * @param hiddenLayerBias   The BIAS value for hidden layer(default 0.7).
+     * @param outputLayerBias   The BIAS value for output layer(default 0.7).
+     */
     public Network(int inputCount,
                    int hiddenCount,
                    int outputCount,
@@ -70,7 +86,7 @@ public class Network implements Serializable {
     }
 
     /**
-     * Count RootMSE
+     * Calculate and return RootMSE.
      * @return RootMSE
      */
     public Double getError(int len){
@@ -82,7 +98,7 @@ public class Network implements Serializable {
     /**
      * Calculate outputs based on input.
      * @param input input of the neural network.
-     * @return values of the hidden layer.
+     * @return values from output neurons.
      */
     public Double[] calculateOutputs(Double[] input){
 
@@ -111,7 +127,7 @@ public class Network implements Serializable {
 
     /**
      * Count sigmas, gradients, deltas and adjust weights.
-     * @param ideal ideal result.
+     * @param ideal ideal results.
      */
     public void learn(Double ideal[]){
         /*

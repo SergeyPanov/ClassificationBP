@@ -4,6 +4,9 @@ import cz.vut.fit.neuron.Neuron;
 
 import java.io.Serializable;
 
+/**
+ * Synapse connect two neurons.
+ */
 public class Synapse implements Serializable {
     /**
      * Left neuron.
@@ -20,8 +23,14 @@ public class Synapse implements Serializable {
      */
     private Double weight;
 
+    /**
+     * Old delta value(need for learning).
+     */
     private Double oldDeltaWeight;
 
+    /**
+     * Gradient value(needs for learning).
+     */
     private Double grad;
 
 

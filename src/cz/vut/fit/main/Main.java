@@ -4,10 +4,14 @@ import cz.vut.fit.network.Network;
 import cz.vut.fit.options.Arguments;
 import cz.vut.fit.reader.InputReader;
 import cz.vut.fit.stopcondition.StopCondition;
+import org.apache.commons.cli.HelpFormatter;
 
 import java.io.*;
 import java.util.List;
 
+/**
+ * Class makes decision about activity(learn or classify) based on parameters.
+ */
 public class Main {
 
     private static Network deserializeNetwork() throws IOException, ClassNotFoundException {
@@ -167,6 +171,11 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
         arguments = new Arguments(args);
+
+        if (arguments.getCommandLine().hasOption("help")){
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp("List of available parameters:", arguments.getOptions());
+        }
 
         /*
         If training-set parameter is set the learning method should proceed

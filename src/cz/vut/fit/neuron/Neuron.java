@@ -5,20 +5,40 @@ import cz.vut.fit.synapse.Synapse;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * Single neuron.
+ */
 public class Neuron  implements Serializable{
     /**
-     * Output of the neuron.
+     * The value neuron fires.
      */
     private Double fire;
 
+    /**
+     * Array of input synapses.
+     */
     private ArrayList<Synapse> inputSynapses;
+
+    /**
+     * Array of output synapses.
+     */
     private ArrayList<Synapse> outputSynapses;
 
+    /**
+     * Sigma value for synapse(needs for learn process).
+     */
     private Double sigma;
 
+    /**
+     * The BIAS value.
+     */
     private Double bias;
 
-
+    /**
+     * Activation function.
+     * @param sum   Sum of multiplied fires from the preceding neurons and weights.
+     * @return  Sigmoid of the 'sum' value.
+     */
     private Double sigmoid(Double sum) {
         return 1.0 / (1 + Math.exp(-1.0 * sum));
     }

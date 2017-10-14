@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Class reads input files which contains training set and ideal outputs.
+ * Auxiliary class for routine with files.
  */
 public class InputReader {
     private String path;

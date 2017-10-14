@@ -5,10 +5,10 @@ import org.apache.commons.cli.*;
 public class Arguments {
 
     private CommandLine commandLine;
-
+    private Options options;
 
     public Arguments(String[] args) throws ParseException {
-        Options options = new Options();
+        options = new Options();
 
         Option momentum = Option.builder()
                 .longOpt("momentum")
@@ -26,7 +26,7 @@ public class Arguments {
                 .hasArg()
                 .build();
 
-        Option hiddenLayerBias = Option.builder()
+        Option hiddenLayerBiases = Option.builder()
                 .longOpt("hidden-biases")
                 .desc("Hidden layer BIAS value.")
                 .required(false)
@@ -42,8 +42,8 @@ public class Arguments {
                 .hasArg()
                 .build();
 
-        Option inputNeurons = Option.builder()
-                .longOpt("input-neurons")
+        Option outputLayer = Option.builder()
+                .longOpt("input-layer")
                 .desc("Amount of input neurons.")
                 .required(false)
                 .type(Integer.class)
@@ -59,7 +59,7 @@ public class Arguments {
                 .build();
 
         Option outputNeurons = Option.builder()
-                .longOpt("output-neurons")
+                .longOpt("output-layer")
                 .desc("Amount of output neurons.")
                 .required(false)
                 .type(Integer.class)
@@ -119,12 +119,16 @@ public class Arguments {
                 .hasArg()
                 .build();
 
+        Option help = Option.builder()
+                .longOpt("help")
+                .build();
+
         options
                 .addOption(momentum)
                 .addOption(learningRate)
-                .addOption(hiddenLayerBias)
+                .addOption(hiddenLayerBiases)
                 .addOption(outputLayerBias)
-                .addOption(inputNeurons)
+                .addOption(outputLayer)
                 .addOption(hiddenNeurons)
                 .addOption(outputNeurons)
                 .addOption(trainingSetPath)
@@ -134,6 +138,7 @@ public class Arguments {
                 .addOption(rootMSEthreshold)
                 .addOption(iterationsCount)
                 .addOption(serializeTo)
+                .addOption(help)
         ;
 
         CommandLineParser parser = new DefaultParser();
@@ -141,6 +146,9 @@ public class Arguments {
         commandLine = parser.parse(options, args);
     }
 
+    public Options getOptions() {
+        return options;
+    }
 
     public CommandLine getCommandLine() {
         return commandLine;

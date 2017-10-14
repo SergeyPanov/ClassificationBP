@@ -4,6 +4,7 @@ import cz.vut.fit.network.Network;
 import cz.vut.fit.options.Arguments;
 import cz.vut.fit.reader.InputReader;
 import cz.vut.fit.stopcondition.StopCondition;
+import org.apache.commons.cli.HelpFormatter;
 
 import java.io.*;
 import java.util.Arrays;
@@ -40,14 +41,14 @@ public class Main {
     private static void learn() throws Exception {
 
         if (
-                            arguments.getCommandLine().getOptionValue("input-neurons") == null ||
-                            Integer.valueOf(arguments.getCommandLine().getOptionValue("input-neurons")) <= 0||
-                            arguments.getCommandLine().getOptionValue("output-neurons") == null ||
-                            Integer.valueOf(arguments.getCommandLine().getOptionValue("output-neurons")) <= 0 ||
+                            arguments.getCommandLine().getOptionValue("input-layer") == null ||
+                            Integer.valueOf(arguments.getCommandLine().getOptionValue("input-layer")) <= 0||
+                            arguments.getCommandLine().getOptionValue("output-layer") == null ||
+                            Integer.valueOf(arguments.getCommandLine().getOptionValue("output-layer")) <= 0 ||
                             arguments.getCommandLine().getOptionValues("hidden-layers") == null ||
                             Arrays.asList(arguments.getCommandLine().getOptionValues("hidden-layers")).contains("0")
                 ){
-            throw new Exception("Parameters 'input-neurons', 'hidden-layers' and 'output-neurons' are required for training network and should be > 0.");
+            throw new Exception("Parameters 'input-layer', 'hidden-layers' and 'output-layer' are required for training network and should be > 0.");
         }
 
         double[] hiddenBiases = new double[arguments.getCommandLine().getOptionValues("hidden-layers").length];
@@ -64,9 +65,9 @@ public class Main {
 
 
         Network network = new Network(
-                Integer.valueOf(arguments.getCommandLine().getOptionValue("input-neurons")),
+                Integer.valueOf(arguments.getCommandLine().getOptionValue("input-layer")),
                 Stream.of(arguments.getCommandLine().getOptionValues("hidden-layers")).mapToInt(Integer::valueOf).toArray(),
-                Integer.valueOf(arguments.getCommandLine().getOptionValue("output-neurons")),
+                Integer.valueOf(arguments.getCommandLine().getOptionValue("output-layer")),
                 Double.valueOf(arguments.getCommandLine().getOptionValue("learning-rate", "0.7")),
                 Double.valueOf(arguments.getCommandLine().getOptionValue("momentum", "0.3")),
                 hiddenBiases,
@@ -181,6 +182,12 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
         arguments = new Arguments(args);
+
+        if (arguments.getCommandLine().hasOption("help")){
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp("Help: ", arguments.getOptions());
+            return;
+        }
 
         /*
         If training-set parameter is set the learning method should proceed

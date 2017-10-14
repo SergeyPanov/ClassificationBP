@@ -19,9 +19,9 @@ public class Network implements Serializable {
     /**
      * Layers.
      */
-    private InputNeuron[] inputNeurons;
+    private InputNeuron[] inputLayer;
     private List<HiddenNeuron[]> hiddenLayers;
-    private OutputNeuron[] outputNeurons;
+    private OutputNeuron[] outputLayer;
 
     /**
      * The learning rate.
@@ -53,9 +53,9 @@ public class Network implements Serializable {
         this.learnRate = learnRate;
         this.momentum = momentum;
 
-        this.inputNeurons = new InputNeuron[inputCount];
+        this.inputLayer = new InputNeuron[inputCount];
         for ( i = 0 ; i < inputCount; ++ i ){
-            inputNeurons[i] = new InputNeuron(0);
+            inputLayer[i] = new InputNeuron(0);
         }
 
         this.hiddenLayers = new ArrayList<>();
@@ -70,10 +70,10 @@ public class Network implements Serializable {
         }
 
 
-        this.outputNeurons = new OutputNeuron[outputCount];
+        this.outputLayer = new OutputNeuron[outputCount];
         for ( i = 0 ; i < outputCount; ++ i ){
-            outputNeurons[i] = new OutputNeuron();
-            outputNeurons[i].setBias(outputLayerBias);
+            outputLayer[i] = new OutputNeuron();
+            outputLayer[i].setBias(outputLayerBias);
         }
     }
 
@@ -82,7 +82,7 @@ public class Network implements Serializable {
      * @return RootMSE
      */
     public Double getError(int len){
-        Double err = Math.sqrt(globalError / len * outputNeurons.length);
+        Double err = Math.sqrt(globalError / len * outputLayer.length);
         globalError = 0.0; // clear the accumulator
         return err;
     }
@@ -95,7 +95,7 @@ public class Network implements Serializable {
     public Double[] calculateOutputs(Double[] input){
 
         for (int i = 0; i < input.length; ++ i){
-            inputNeurons[i].setFire(input[i]);
+            inputLayer[i].setFire(input[i]);
         }
 
         for (HiddenNeuron[] hiddenLayer:
@@ -105,10 +105,10 @@ public class Network implements Serializable {
             }
         }
         int i = 0;
-        Double[] result = new Double[outputNeurons.length];
+        Double[] result = new Double[outputLayer.length];
 
         for (OutputNeuron outputNeuron:
-             outputNeurons) {
+             outputLayer) {
             outputNeuron.calculateFile();
             result[i++] = outputNeuron.getFire();
         }
@@ -125,13 +125,13 @@ public class Network implements Serializable {
         /*
         Calculate sigma for output neurons.
          */
-        for (int i = 0 ; i < outputNeurons.length; ++ i){
+        for (int i = 0 ; i < outputLayer.length; ++ i){
 
-            globalError += (ideal[i] - outputNeurons[i].getFire()) * (ideal[i] - outputNeurons[i].getFire());
+            globalError += (ideal[i] - outputLayer[i].getFire()) * (ideal[i] - outputLayer[i].getFire());
 
-            Double outNeuronDerivation = outputNeurons[i].derivation();
+            Double outNeuronDerivation = outputLayer[i].derivation();
 
-            outputNeurons[i].setSigma((ideal[i] - outputNeurons[i].getFire()) * outNeuronDerivation );
+            outputLayer[i].setSigma((ideal[i] - outputLayer[i].getFire()) * outNeuronDerivation );
         }
 
         /*
@@ -170,7 +170,7 @@ public class Network implements Serializable {
          */
 
         for (InputNeuron inputNeuron:
-             inputNeurons) {
+             inputLayer) {
             for (Synapse synapse:
                  inputNeuron.getOutputSynapses()) {
                 synapse.setGrad(inputNeuron.getFire() * synapse.getTo().getSigma());
@@ -218,13 +218,13 @@ public class Network implements Serializable {
         Connect input neurons and hidden neurons.
          */
 
-        connectLayers(inputNeurons, hiddenLayers.get(0));  // Connect input with first hidden
+        connectLayers(inputLayer, hiddenLayers.get(0));  // Connect input with first hidden
 
         for (int hiddenLayerIndex = 1; hiddenLayerIndex < hiddenLayers.size() - 1; ++ hiddenLayerIndex){
             connectLayers(hiddenLayers.get(hiddenLayerIndex -1), hiddenLayers.get(hiddenLayerIndex));
         }
 
-        connectLayers(hiddenLayers.get(hiddenLayers.size() - 1), outputNeurons);  // Connect last hidden with output
+        connectLayers(hiddenLayers.get(hiddenLayers.size() - 1), outputLayer);  // Connect last hidden with output
 
     }
 

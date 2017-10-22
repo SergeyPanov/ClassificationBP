@@ -1,7 +1,7 @@
-##Description
+## Description
 Neural network with Back propagation learning algorithm.
 
-##Arguments
+## Arguments
 Neural network with Back propagation learning algorithm.
 List of available parameters:
     
@@ -26,7 +26,7 @@ List of available parameters:
     --trained-network <arg>      Path to the trained network.
     --training-set <arg>         Path to file with training set.
     
-##Usage
+## Usage
  `ant build` building project.
  
  `ant clean` cleaning.

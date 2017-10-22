@@ -27,7 +27,7 @@ public class Neuron  implements Serializable{
     /**
      * Sigma value for synapse(needs for learn process).
      */
-    private Double sigma;
+    private Double delta;
 
     /**
      * The BIAS value.
@@ -90,12 +90,12 @@ public class Neuron  implements Serializable{
         this.fire = fire;
     }
 
-    public Double getSigma() {
-        return sigma;
+    public Double getDelta() {
+        return delta;
     }
 
-    public void setSigma(Double sigma) {
-        this.sigma = sigma;
+    public void setDelta(Double delta) {
+        this.delta = delta;
     }
 
     public void setBias(Double bias) {

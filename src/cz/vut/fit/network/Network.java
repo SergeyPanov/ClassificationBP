@@ -139,7 +139,7 @@ public class Network implements Serializable {
 
             Double outNeuronDerivation = outputNeurons[i].derivation();
 
-            outputNeurons[i].setSigma((ideal[i] - outputNeurons[i].getFire()) * outNeuronDerivation );
+            outputNeurons[i].setDelta((ideal[i] - outputNeurons[i].getFire()) * outNeuronDerivation );
         }
 
         /*
@@ -149,16 +149,16 @@ public class Network implements Serializable {
              hiddenNeurons) {
             Double hiddenNeuronDerivation = hiddenNeuron.derivation();
 
-            Double sum = hiddenNeuron.getOutputSynapses().stream().mapToDouble(synapse -> synapse.getWeight() * synapse.getTo().getSigma()).sum();
+            Double sum = hiddenNeuron.getOutputSynapses().stream().mapToDouble(synapse -> synapse.getWeight() * synapse.getTo().getDelta()).sum();
 
-            hiddenNeuron.setSigma(sum * hiddenNeuronDerivation);
+            hiddenNeuron.setDelta(sum * hiddenNeuronDerivation);
 
             /*
             Calculate gradients for each output synapse.
              */
             for (Synapse outSynapse:
                  hiddenNeuron.getOutputSynapses()) {
-                outSynapse.setGrad(hiddenNeuron.getFire() * outSynapse.getTo().getSigma());
+                outSynapse.setGrad(hiddenNeuron.getFire() * outSynapse.getTo().getDelta());
             }
             /*
             Calculate delta W for each synapse.
@@ -179,7 +179,7 @@ public class Network implements Serializable {
              inputNeurons) {
             for (Synapse synapse:
                  inputNeuron.getOutputSynapses()) {
-                synapse.setGrad(inputNeuron.getFire() * synapse.getTo().getSigma());
+                synapse.setGrad(inputNeuron.getFire() * synapse.getTo().getDelta());
                 Double deltaW = learnRate * synapse.getGrad() + momentum * synapse.getOldDeltaWeight();
                 synapse.adjustWeight(deltaW);
             }

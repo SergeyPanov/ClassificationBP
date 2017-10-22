@@ -126,12 +126,12 @@ public class Network implements Serializable {
 
 
     /**
-     * Count sigmas, gradients, deltas and adjust weights.
+     * Count gradients, deltas and adjust weights.
      * @param ideal ideal results.
      */
     public void learn(Double ideal[]){
         /*
-        Calculate sigma for output neurons.
+        Output layer calculation
          */
         for (int i = 0 ; i < outputNeurons.length; ++ i){
 

@@ -18,7 +18,7 @@ public class Arguments {
 
         Option momentum = Option.builder()
                 .longOpt("momentum")
-                .desc("The momentum value.")
+                .desc("The momentum value. Default is 0.3.")
                 .required(false)
                 .type(Double.class)
                 .hasArg()
@@ -26,7 +26,7 @@ public class Arguments {
 
         Option learningRate = Option.builder()
                 .longOpt("learning-rate")
-                .desc("The learning rate value.")
+                .desc("The learning rate value. Default is 0.7.")
                 .required(false)
                 .type(Double.class)
                 .hasArg()
@@ -34,7 +34,7 @@ public class Arguments {
 
         Option hiddenLayerBias = Option.builder()
                 .longOpt("hidden-bias")
-                .desc("The BIAS value for hidden neurons.")
+                .desc("The BIAS value for hidden neurons. Default is 0.7.")
                 .required(false)
                 .type(Double.class)
                 .hasArg()
@@ -42,7 +42,7 @@ public class Arguments {
 
         Option outputLayerBias = Option.builder()
                 .longOpt("output-bias")
-                .desc("The BIAS value for output neurons.")
+                .desc("The BIAS value for output neurons. Default is 0.7.")
                 .required(false)
                 .type(Double.class)
                 .hasArg()

@@ -4,9 +4,11 @@ import cz.vut.fit.network.Network;
 import cz.vut.fit.options.Arguments;
 import cz.vut.fit.reader.InputReader;
 import cz.vut.fit.stopcondition.StopCondition;
+import cz.vut.fit.wineclassmapper.WineClassMapper;
 import org.apache.commons.cli.HelpFormatter;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -163,7 +165,7 @@ public class Main {
                     out) {
                 System.out.print(d + " ");
             }
-            System.out.println("");
+            System.out.println("Class: " + WineClassMapper.getClass(Arrays.asList(out)));
         }
 
     }

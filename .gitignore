@@ -1,10 +1,5 @@
 .idea/
-*.iml
-
 /out/
-/src/resources/
-/src/libs/
 **/*.nnet
-/libs/
 /build/
 /jars/

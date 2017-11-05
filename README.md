@@ -27,14 +27,22 @@ List of available parameters:
     --training-set <arg>         Path to file with training set.
     
 ## Usage
- `ant build` building project.
+     `ant build` building project.
+     
+     `ant clean` remove folders with compiled classes, result jars and serialized networks.
+     
+     `ant package` create runnable jar file.
+    
+## Build in example
  
- `ant clean` cleaning.
+     `ant help` print message about building, packaging, cleaning ant example usage.
  
- `ant package` for packaging.
+     `ant train-wine` training network for wine classification.
  
- `ant train-wine` example of training network to classify wines to one of three classes.
+     `ant classify-wine-1` classify first set of unknown wines.
  
- `ant classify-wine` for classification unknown wine.
+     `ant classify-wine-2` classify second set of unknown wines.
+ 
+     `ant classify-wine-3` classify third set of unknown wines.
  
 

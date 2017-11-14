@@ -39,10 +39,10 @@ List of available parameters:
  
      `ant train-wine` training network for wine classification.
  
-     `ant classify-wine-1` classify first set of unknown wines.
+     `ant classify-wine-1` classify first set of unknown wine.
  
-     `ant classify-wine-2` classify second set of unknown wines.
+     `ant classify-wine-2` classify second set of unknown wine.
  
-     `ant classify-wine-3` classify third set of unknown wines.
+     `ant classify-wine-3` classify third set of unknown wine.
  
 

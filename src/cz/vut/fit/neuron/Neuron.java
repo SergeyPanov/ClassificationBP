@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Single neuron.
+ * Simulate neuron's behavior.
  */
 public class Neuron  implements Serializable{
     /**
@@ -25,7 +25,7 @@ public class Neuron  implements Serializable{
     private ArrayList<Synapse> outputSynapses;
 
     /**
-     * Sigma value for synapse(needs for learn process).
+     * Delta value for synapse(needs for learn process).
      */
     private Double delta;
 
@@ -43,6 +43,10 @@ public class Neuron  implements Serializable{
         return 1.0 / (1 + Math.exp(-1.0 * sum));
     }
 
+    /**
+     * Derivation of sigmoid.
+     * @return
+     */
     public Double derivation(){
         return (1 - fire) * fire;
     }
@@ -71,10 +75,12 @@ public class Neuron  implements Serializable{
         this.fire = fire;
     }
 
+    /**
+     * Calculate value will be fired.
+     */
     public void calculateFile(){
         fire = sigmoid(inputSynapses.stream().mapToDouble(s -> s.getWeight() * s.getFrom().getFire()).sum() + bias);
     }
-
     public void addInputSynapse(Synapse input){
         inputSynapses.add(input);
     }

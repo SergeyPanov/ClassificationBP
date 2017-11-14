@@ -15,7 +15,12 @@ import java.util.List;
  * Class makes decision about activity(learn or classify) based on parameters.
  */
 public class Main {
-
+    /**
+     * Deserialize trained network defined by 'trained-network' parameter,
+     * @return deserialized network
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private static Network deserializeNetwork() throws IOException, ClassNotFoundException {
         Network deserializedNetwork;
         ObjectInputStream objectInputStream;
@@ -26,7 +31,11 @@ public class Main {
         return deserializedNetwork;
     }
 
-
+    /**
+     * Serialize trained network to the file set by 'serialize-to'.
+     * @param network
+     * @throws IOException
+     */
     private static void serializeNetwork(Network network) throws IOException {
         File file = new File(arguments.getCommandLine().getOptionValue("training-set"));
 
@@ -39,7 +48,7 @@ public class Main {
     private static Arguments arguments;
 
     /**
-     * Method is called for learning procedure.
+     * Method is called in case of learning procedure.
      */
     private static void learn() throws Exception {
 
@@ -135,6 +144,9 @@ public class Main {
 
     }
 
+    /**
+     * Method is called in case of classification.
+     */
     private static void classification() throws IOException, ClassNotFoundException {
         Network network;
 

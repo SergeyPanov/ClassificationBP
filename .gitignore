@@ -3,3 +3,4 @@
 **/*.nnet
 /build/
 /jars/
+doc/

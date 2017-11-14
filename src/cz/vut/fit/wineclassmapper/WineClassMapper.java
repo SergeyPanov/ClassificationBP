@@ -4,6 +4,10 @@ package cz.vut.fit.wineclassmapper;
 import java.util.List;
 import java.util.stream.IntStream;
 
+/**
+ * Maps vector to their literal representation.
+ * is needed for user friendly output.
+ */
 public class WineClassMapper {
 
 

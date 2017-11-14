@@ -28,6 +28,8 @@
     <property name="expected-2" value="src/resources/ExpectedClasses2"/>
     <property name="expected-3" value="src/resources/ExpectedClasses3"/>
 
+    <property name="doc.dir" value="doc"/>
+
 
     <path id="master-classpath">
         <fileset dir="${lib.dir}">
@@ -61,6 +63,7 @@
             <fileset dir="${build.dir}"/>
             <fileset dir="${jars.dir}"/>
             <fileset dir="${serialized-networks.dir}"/>
+            <fileset dir="${doc.dir}"/>
         </delete>
     </target>
 
@@ -112,5 +115,9 @@
             `ant classify-wine-2` classify second set of unknown wines.
             `ant classify-wine-3` classify third set of unknown wines.
         </echo>
+    </target>
+
+    <target name="doc" description="Generate documentation">
+        <javadoc sourcepath="${src.dir}" destdir="${doc.dir}"/>
     </target>
 </project>

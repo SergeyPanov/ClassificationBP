@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Auxiliary class for routine with files.
+ * Auxiliary class for reading files.
  */
 public class InputReader {
     private String path;

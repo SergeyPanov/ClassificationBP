@@ -5,7 +5,8 @@ import cz.vut.fit.neuron.Neuron;
 import java.io.Serializable;
 
 /**
- * Synapse connect two neurons.
+ * Represent behaviour of synapse.
+ * Connects two neurons
  */
 public class Synapse implements Serializable {
     /**
@@ -34,7 +35,9 @@ public class Synapse implements Serializable {
     private Double grad;
 
 
-
+    /**
+     * Initiation.
+     */
     public Synapse(){
         weight = 0.5 - (Math.random());
         oldDeltaWeight = 0.0;

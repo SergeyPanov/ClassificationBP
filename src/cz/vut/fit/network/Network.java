@@ -216,6 +216,7 @@ public class Network implements Serializable {
 
     /**
      * Reset the network.
+     * Invoke 'connectionLayers' method for connection input layer with hidden and hidden with output.
      */
     public void reset(){
         /*

@@ -7,7 +7,7 @@
     <property name="jars.dir" value="jars"/>
     <property name="main.class" value="cz.vut.fit.main.Main"/>
     <property name="commons-cli" value="commons-cli-1.4.jar"/>
-    <property name="classificator" value="Classificator.jar"/>
+    <property name="classifier" value="Classifier.jar"/>
     <property name="serialized-networks.dir" value="serialized-networks"/>
 
     <property name="training-set" value="src/resources/WineNormalizedInput"/>
@@ -27,8 +27,6 @@
     <property name="expected-1" value="src/resources/ExpectedClasses1"/>
     <property name="expected-2" value="src/resources/ExpectedClasses2"/>
     <property name="expected-3" value="src/resources/ExpectedClasses3"/>
-
-    <property name="doc.dir" value="doc"/>
 
 
     <path id="master-classpath">
@@ -50,7 +48,7 @@
     <target name="package" description="Package whole project to runnable .jar file" depends="build">
         <mkdir dir="${jars.dir}"/>
 
-        <jar destfile="${jars.dir}/${classificator}" basedir="${build.dir}">
+        <jar destfile="${jars.dir}/${classifier}" basedir="${build.dir}">
             <manifest>
                 <attribute name="Main-Class" value="${main.class}"/>
                 <attribute name="Class-Path" value="../${lib.dir}/${commons-cli}"/>
@@ -59,18 +57,17 @@
     </target>
 
     <target name="clean" description="Remove compiled files and packaged jar files">
-        <delete includeemptydirs="true">
+        <delete includeemptydirs="true" failonerror="false">
             <fileset dir="${build.dir}"/>
             <fileset dir="${jars.dir}"/>
             <fileset dir="${serialized-networks.dir}"/>
-            <fileset dir="${doc.dir}"/>
         </delete>
     </target>
 
     <target name="train-wine" description="Train network with 1000 iterations" depends="package">
         <mkdir dir="${serialized-networks.dir}"/>
 
-        <java jar="${jars.dir}/${classificator}" fork="true">
+        <java jar="${jars.dir}/${classifier}" fork="true">
             <arg line="--training-set ${training-set} --ideal-set ${ideal-set} --input-neurons ${input-neurons}
             --hidden-neurons ${hidden-neurons} --output-neurons ${output-neurons} --serialize-to ${serialized-networks.dir}/${serialized-to}
             --iterations-number ${iterations}"/>
@@ -78,7 +75,7 @@
     </target>
 
     <target name="classify-wine-1" description="Classify first set of wine using trained network">
-        <java jar="${jars.dir}/${classificator}" fork="true">
+        <java jar="${jars.dir}/${classifier}" fork="true">
             <arg line="--trained-network ${serialized-networks.dir}/${trained-network} --input-set ${input-set-1}"/>
         </java>
         <loadfile property="expected" srcfile="${expected-1}" />
@@ -87,7 +84,7 @@
     </target>
 
     <target name="classify-wine-2" description="Classify second set of wine using trained network">
-        <java jar="${jars.dir}/${classificator}" fork="true">
+        <java jar="${jars.dir}/${classifier}" fork="true">
             <arg line="--trained-network ${serialized-networks.dir}/${trained-network} --input-set ${input-set-2}"/>
         </java>
         <loadfile property="expected" srcfile="${expected-2}" />
@@ -96,7 +93,7 @@
     </target>
 
     <target name="classify-wine-3" description="Classify third set of wine using trained network">
-        <java jar="${jars.dir}/${classificator}" fork="true">
+        <java jar="${jars.dir}/${classifier}" fork="true">
             <arg line="--trained-network ${serialized-networks.dir}/${trained-network} --input-set ${input-set-3}"/>
         </java>
         <loadfile property="expected" srcfile="${expected-3}" />
@@ -116,9 +113,5 @@
             `ant classify-wine-3` classify third set of unknown wines.
             `ant doc` generate documentation.
         </echo>
-    </target>
-
-    <target name="doc" description="Generate documentation">
-        <javadoc sourcepath="${src.dir}" destdir="${doc.dir}"/>
     </target>
 </project>
